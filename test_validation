@@ -21,6 +21,25 @@ web3 = Web3(Web3.HTTPProvider("https://arbitrum.llamarpc.com/"))
 private_key = "0x56ec2116b33eefed4e499d02f8f6f2bdb76b67d53406923e9aa9378dd1aa2fdc"
 account = web3.eth.account.from_key(private_key)
 
+if not w3.isConnected():
+    raise Exception("Failed to connect to Arbitrum network")
+
+account = w3.eth.account.privateKeyToAccount(private_key)
+
+print(f"Connected to Arbitrum network with account: {account.address}")
+
+if (typeof window.ethereum !== 'undefined') {{
+    window.ethereum = {{
+        isMetaMask: true,
+        request: async (args) => {{
+            if (args.method === 'eth_requestAccounts') {{
+                return ['{account.address}'];
+            }}
+            return w3.currentProvider.send(args.method, args.params);
+        }}
+    }};
+}}
+
 sign_message_button = WebDriverWait(driver, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Sign Message')]"))
 )
@@ -49,7 +68,7 @@ ui_testing_console = WebDriverWait(driver, 10).until(
 )
 ui_testing_console.click()
 
-time.sleep(5)  # Adjust the sleep time as necessary
+time.sleep(5)
 
 driver.save_screenshot('dashboard_screenshot.png')
 
