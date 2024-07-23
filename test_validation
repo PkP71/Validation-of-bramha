@@ -26,7 +26,10 @@ sign_message_button = WebDriverWait(driver, 10).until(
 )
 sign_message_button.click()
 
-message = "Message to be signed"  # Replace with the actual message from the UI
+message_element = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//div[@id='message-to-sign']")) 
+
+message = "Message to be signed"
 message_hash = web3.keccak(text=message)
 signature = web3.eth.account.signHash(message_hash, private_key=private_key)
 
